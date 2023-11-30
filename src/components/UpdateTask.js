@@ -35,7 +35,7 @@ const UpdateTaskForm = ({ task,onCancel, onUpdate }) => {
   };
 
   return (
-    <div className="flex items-center justify-between bg-[#25273D] rounded-lg pb-2 w-[35vw]">
+    <div className="flex items-center justify-between bg-[#25273D] rounded-lg pb-2 lg:w-[35vw] w-full">
     <div className="flex px-6 justify-between">
       <div className="mx-8">
         <div className="text-[18px] px-4 pt-2">

@@ -85,9 +85,10 @@ const TaskList = () => {
   };
 
   return (
-    <div className="p-10 text-white flex flex-col justify-center items-center">
+    <div className="p-10 text-white flex flex-col justify-center items-center h-screen">
       <h1 className="text-2xl font-bold ">TODO</h1>
       <AddTask onAddTask={handleAddTask} />
+      <div className="bg-[#25273D] rounded-xl p-2">
       {tasks !== null &&
         tasks
           .slice()
@@ -101,8 +102,8 @@ const TaskList = () => {
             }
           })
           .map((task, id) => (
-            <div className=" w-[35vw] ">
-              <div key={id} className="flex bg-[#25273D] justify-between">
+            <div className="lg:w-[34vw] w-full">
+              <div key={id} className="flex  justify-between ">
                 {isUpdateFormOpen && selectedTaskIndex === task._id && (
                   <UpdateTaskForm
                     task={selectedTask}
@@ -158,6 +159,7 @@ const TaskList = () => {
               </div>
             </div>
           ))}
+          </div>
     </div>
   );
 };

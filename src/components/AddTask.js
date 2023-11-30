@@ -35,7 +35,7 @@ const AddTask = ({ isOpen, onClose, onAddTask }) => {
 
   return (
     <div >
-      <div className="flex items-center bg-[#25273D] rounded-lg my-5 pl-2  w-[35vw] ">
+      <div className="flex items-center bg-[#25273D] rounded-xl my-5 pl-2  lg:w-[35vw] w-full">
         <div className="px-2.5">
           <button
             onClick={handleAddTask}
