@@ -3,6 +3,7 @@ import AddTask from "./AddTask";
 import UpdateTaskForm from "./UpdateTask";
 import Checkbox from "@mui/material/Checkbox";
 import { FaEdit } from 'react-icons/fa';
+import { motion } from "framer-motion";
 
 const TaskList = () => {
   const [tasks, setTasks] = useState([]);
@@ -34,6 +35,15 @@ const TaskList = () => {
     fetchData();
   }, []);
 
+
+  const updateTaskLocally = (taskId, updatedStatus) => {
+    setTasks((prevTasks) =>
+      prevTasks.map((task) =>
+        task._id === taskId ? { ...task, status: updatedStatus } : task
+      )
+    );
+  };
+
   const handleAddTask = () => {
     fetchData();
   };
@@ -49,10 +59,10 @@ const TaskList = () => {
     setSelectedTask(null);
   };
 
-  const handleUpdateFormUpdate = () => {
+  const handleUpdateFormUpdate = (updatedStatus) => {
     setUpdateFormOpen(false);
     setSelectedTask(null);
-    fetchData();
+    updateTaskLocally(selectedTaskIndex, updatedStatus);
   };
 
   const toggleStatus = async (taskId) => {
@@ -77,15 +87,14 @@ const TaskList = () => {
           throw new Error("Failed to update task status");
         }
 
-        fetchData();
+        updateTaskLocally(taskId, updatedStatus);
       }
     } catch (error) {
       console.error("Error updating task status:", error);
     }
   };
-
   return (
-    <div className="p-10 text-white flex flex-col justify-center items-center h-screen">
+    <div className="p-10 text-white flex flex-col justify-center items-center h-full">
       <h1 className="text-2xl font-bold ">TODO</h1>
       <AddTask onAddTask={handleAddTask} />
       <div className="bg-[#25273D] rounded-xl p-2">
@@ -102,13 +111,22 @@ const TaskList = () => {
             }
           })
           .map((task, id) => (
+            <motion.div
+                key={id}
+                className="lg:w-[34vw] w-full"
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+              >
             <div className="lg:w-[34vw] w-full">
               <div key={id} className="flex  justify-between ">
                 {isUpdateFormOpen && selectedTaskIndex === task._id && (
                   <UpdateTaskForm
                     task={selectedTask}
                     onCancel={handleUpdateFormClose}
-                    onUpdate={handleUpdateFormUpdate}
+                    onUpdate={(updatedStatus) =>
+                      handleUpdateFormUpdate(updatedStatus)
+                    }
                   />
                 )}
 
@@ -158,6 +176,7 @@ const TaskList = () => {
                 ) : null}
               </div>
             </div>
+            </motion.div>
           ))}
           </div>
     </div>

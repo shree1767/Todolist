@@ -3,7 +3,7 @@ import TaskList from './components/TaskList';
 
 function App() {
   return (
-    <div className="App bg-[#181723] h-full py-10">
+    <div className="App bg-[#181723] h-screen">
         <TaskList/>
     </div>
   );

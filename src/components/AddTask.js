@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useCallback } from "react";
 import { FaPlus } from "react-icons/fa";
 
-const AddTask = ({ isOpen, onClose, onAddTask }) => {
+const AddTask = React.memo(({ onAddTask }) => {
   const [taskName, setTaskName] = useState("");
   const [taskDescription, setTaskDescription] = useState("");
 
-  const handleAddTask = async () => {
+  const handleAddTask = useCallback(async () => {
     try {
       const newTask = {
         name: taskName,
@@ -31,11 +31,17 @@ const AddTask = ({ isOpen, onClose, onAddTask }) => {
     } catch (error) {
       console.error("Error adding task:", error);
     }
+  }, [onAddTask, taskName, taskDescription]);
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      handleAddTask();
+    }
   };
 
   return (
-    <div >
-      <div className="flex items-center bg-[#25273D] rounded-xl my-5 pl-2  lg:w-[35vw] w-full">
+    <div>
+      <div className="flex items-center bg-[#25273D] rounded-xl my-5 pl-2 lg:w-[35vw] w-full">
         <div className="px-2.5">
           <button
             onClick={handleAddTask}
@@ -52,6 +58,7 @@ const AddTask = ({ isOpen, onClose, onAddTask }) => {
               value={taskName}
               placeholder="Create a new todo..."
               onChange={(e) => setTaskName(e.target.value)}
+              onKeyDown={handleKeyDown}
               className="bg-transparent rounded-md w-full outline-none"
             />
           </div>
@@ -63,6 +70,7 @@ const AddTask = ({ isOpen, onClose, onAddTask }) => {
               placeholder="Description"
               value={taskDescription}
               onChange={(e) => setTaskDescription(e.target.value)}
+              onKeyDown={handleKeyDown}
               className="bg-transparent rounded-md w-full outline-none"
             />
           </div>
@@ -70,6 +78,6 @@ const AddTask = ({ isOpen, onClose, onAddTask }) => {
       </div>
     </div>
   );
-};
+});
 
 export default AddTask;
