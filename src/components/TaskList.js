@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import AddTask from "./AddTask";
 import UpdateTaskForm from "./UpdateTask";
-import { Checkbox } from "antd";
+import Checkbox from "@mui/material/Checkbox";
+import { FaEdit } from 'react-icons/fa';
 
 const TaskList = () => {
   const [tasks, setTasks] = useState([]);
-  const [isAddTaskModalOpen, setAddTaskModalOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
+  const [selectedTaskIndex, setSelectedTaskIndex] = useState(null);
   const [isUpdateFormOpen, setUpdateFormOpen] = useState(false);
 
   const fetchData = async () => {
@@ -34,12 +35,12 @@ const TaskList = () => {
   }, []);
 
   const handleAddTask = () => {
-    setAddTaskModalOpen(false);
     fetchData();
   };
 
   const handleUpdate = (task) => {
     setSelectedTask(task);
+    setSelectedTaskIndex(task._id);
     setUpdateFormOpen(true);
   };
 
@@ -57,31 +58,36 @@ const TaskList = () => {
   const toggleStatus = async (taskId) => {
     try {
       const taskToUpdate = tasks.find((task) => task._id === taskId);
-  
+
       if (taskToUpdate) {
-        const updatedStatus = taskToUpdate.status === "completed" ? "in-progress" : "completed";
-        const response = await fetch(`https://todolist-server-sage.vercel.app/update/${taskId}`, {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ status: updatedStatus }),
-        });
-  
+        const updatedStatus =
+          taskToUpdate.status === "completed" ? "in-progress" : "completed";
+        const response = await fetch(
+          `https://todolist-server-sage.vercel.app/update/${taskId}`,
+          {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ status: updatedStatus }),
+          }
+        );
+
         if (!response.ok) {
           throw new Error("Failed to update task status");
         }
-  
+
         fetchData();
       }
     } catch (error) {
       console.error("Error updating task status:", error);
     }
   };
-  
+
   return (
-    <div className="p-10 text-white">
-      <h1 className="text-2xl font-bold">All Tasks</h1>
+    <div className="p-10 text-white flex flex-col justify-center items-center">
+      <h1 className="text-2xl font-bold ">TODO</h1>
+      <AddTask onAddTask={handleAddTask} />
       {tasks !== null &&
         tasks
           .slice()
@@ -95,49 +101,63 @@ const TaskList = () => {
             }
           })
           .map((task, id) => (
-            <div className="my-10 w-[40vw] ">
-              <div key={id} className="flex justify-between">
-                <div className="flex space-x-5 items-center">
-                  <Checkbox
-                    checked={task.status === "completed"}
-                    onChange={() => toggleStatus(task._id)}
+            <div className=" w-[35vw] ">
+              <div key={id} className="flex bg-[#25273D] justify-between">
+                {isUpdateFormOpen && selectedTaskIndex === task._id && (
+                  <UpdateTaskForm
+                    task={selectedTask}
+                    onCancel={handleUpdateFormClose}
+                    onUpdate={handleUpdateFormUpdate}
                   />
-                <div>
-                  <p className={`text-[18px] ${task.status === "completed" ? "line-through" : ""}`}>
-                    {task.name}
-                  </p>
-                  <p className={`text-[12px] ${task.status === "completed" ? "line-through" : ""}`}>{task.description}</p>
-                </div>
-                </div>
-              
-               
-                <div className="flex justify-between my-5 space-x-5">
-                  <button onClick={() => task.status!=='completed' && handleUpdate(task)}>E</button>
-                  <p className={`text-[12px] px-2 py-1 ${ task.status === "completed"? "bg-[#3BA139]": "bg-[#DC4C4B]"} bg-opacity-40 rounded-lg`}>
-                    {task.status}
-                  </p>
-                </div>
+                )}
+
+                {!isUpdateFormOpen || selectedTaskIndex !== task._id ? (
+                  <>
+                    <div className="px-3 flex space-x-5 items-center text-white">
+                      <Checkbox
+                        checked={task.status === "completed"}
+                        onChange={() => toggleStatus(task._id)}
+                      />
+                      <div>
+                        <p
+                          className={`text-[18px] ${
+                            task.status === "completed" ? "line-through" : ""
+                          }`}
+                        >
+                          {task.name}
+                        </p>
+                        <p
+                          className={`text-[12px] ${
+                            task.status === "completed" ? "line-through" : ""
+                          }`}
+                        >
+                          {task.description}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="px-2 flex justify-between my-5 space-x-5">
+                      <button
+                        onClick={() =>
+                          task.status !== "completed" && handleUpdate(task)
+                        }
+                      >
+                        <FaEdit />
+                      </button>
+                      <p
+                        className={`text-[12px] px-2 py-1 ${
+                          task.status === "completed"
+                            ? "bg-[#3BA139]"
+                            : "bg-[#DC4C4B]"
+                        } bg-opacity-40 rounded-lg`}
+                      >
+                        {task.status}
+                      </p>
+                    </div>
+                  </>
+                ) : null}
               </div>
-              <div className="h-[0.5px] px-2 bg-white"></div>
             </div>
           ))}
-      <button className="text-[12px]" onClick={() => setAddTaskModalOpen(true)}>
-        Add Task
-      </button>
-      {isAddTaskModalOpen && (
-        <AddTask
-          isOpen={isAddTaskModalOpen}
-          onClose={() => setAddTaskModalOpen(false)}
-          onAddTask={handleAddTask}
-        />
-      )}
-      {isUpdateFormOpen && selectedTask && (
-        <UpdateTaskForm
-          task={selectedTask}
-          onCancel={handleUpdateFormClose}
-          onUpdate={handleUpdateFormUpdate}
-        />
-      )}
     </div>
   );
 };

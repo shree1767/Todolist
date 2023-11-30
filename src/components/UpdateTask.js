@@ -31,40 +31,46 @@ const UpdateTaskForm = ({ task,onCancel, onUpdate }) => {
       onUpdate();
     } catch (error) {
       console.error("Error updating task:", error);
-      // Handle the error appropriately (e.g., display an error message)
     }
   };
 
   return (
-    <div className="bg-transparent border rounded-lg mt-5 w-[40vw]  ">
-       <div className="text-[18px] p-4">
+    <div className="flex items-center justify-between bg-[#25273D] rounded-lg pb-2 w-[35vw]">
+    <div className="flex px-6 justify-between">
+      <div className="mx-8">
+        <div className="text-[18px] px-4 pt-2">
           <input
             type="text"
             id="taskName"
             value={updatedName}
             placeholder='Task Name'
             onChange={(e) => setUpdatedName(e.target.value)}
-            className=" bg-transparent rounded-md w-full"
+            className="bg-transparent rounded-md w-full outline-none"
           />
         </div>
-        <div className="text-[12px] px-4 pb-4">
+        <div className="text-[12px] px-4 ">
           <input
             type="text"
             id="taskDesc"
             placeholder="Description"
             value={updatedDescription}
             onChange={(e) => setUpdatedDescription(e.target.value)}
-            className=" bg-transparent rounded-md w-full"
+            className="bg-transparent rounded-md w-full outline-none"
           />
         </div>
-        <div className="h-[0.5px] mt-2 bg-white"></div>
-        <div className="flex justify-end space-x-5 px-2 text-[14px] py-3">
-            <button onClick={onCancel}>Cancel</button>
-          <button onClick={handleUpdate} className="bg-[#DC4C4B] text-white px-4  py-1.5 rounded">
-            Update
-          </button>
-        </div>
+      </div>
     </div>
+  
+    <div className="h-[0.5px] mt-2 bg-white"></div>
+  
+    <div className="flex justify-end space-x-5 px-5 text-[14px]">
+      <button onClick={onCancel}>x</button>
+      <button onClick={handleUpdate} className="bg-[#DC4C4B] text-white px-4 py-1.5 rounded">
+        Update
+      </button>
+    </div>
+  </div>
+  
   );
 };
 
